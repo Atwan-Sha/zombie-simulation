@@ -1,9 +1,15 @@
 class GameModel {
     constructor(cfg) {
-        for (let prop of ["grid_size", "reproductive_age", "initial_population"]) {
-            console.assert(cfg.hasOwnProperty(prop));
+        const default_cfg = {
+            grid_size: 10,
+            reproductive_age: 2,
+            initial_population: 5,
         }
-        this.impl = new GameModelImpl(cfg);
+        for (let k of Object.keys(cfg)) {
+            if (!(k in default_cfg))
+                console.warn("unknown cfg option: ", k);
+        }
+        this.impl = new GameModelImpl(Object.assign({}, default_cfg, cfg));
     }
     get_grid(timestep) {
         return this.impl.get_grid(timestep);
@@ -17,6 +23,7 @@ class GameModel {
 
 class GameModelImpl {
     constructor(cfg) {
+        console.log("initializing with cfg", cfg);
         this.curr_timestep = 0;
         this.cfg = cfg;
         this.population = Array.from(Array(cfg.initial_population), () => Creature.create_rand(cfg.grid_size));
