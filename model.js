@@ -46,10 +46,21 @@ class GameModelImpl {
     }
 
     turn() {
+        this.do_aging();
+        this.do_breeding();
+        this.do_mutations();
+        if (this.population.length > this.cfg.food_shortage_limit)
+            this.kill_half_population();
+        this.refresh_grid();
+    }
+
+    do_aging() {
         for (let c of this.population)
             c.age++;
-        this.population = this.population.filter(c => c.age < (c.is_radioactive?this.cfg.mutant_death_age:this.cfg.normal_death_age));
+        this.population = this.population.filter(c => c.age < (c.is_radioactive ? this.cfg.mutant_death_age : this.cfg.normal_death_age));
+    }
 
+    do_breeding() {
         for (let dad of this.reproductives("Male")) {
             for (let mom of this.reproductives("Female")) {
                 let child = Creature.from_mom(this.cfg, mom);
@@ -57,15 +68,20 @@ class GameModelImpl {
                     this.population.push(child);
             }
         }
+    }
 
+    reproductives(sex) {
+        return this.population.filter(c => !c.is_radioactive && c.sex==sex && c.age>=this.cfg.reproductive_age);
+    }
+
+    do_mutations() {
         for (let mutant of this.population.filter(c => c.is_radioactive)) {
             for (let i = 0; i < 9; ++i) {
-                let neighbor_x = mutant.x - 1 + i%3;
-                let neighbor_y = mutant.y - 1 + Math.floor(i/3);
+                let neighbor_x = mutant.x - 1 + i % 3;
+                let neighbor_y = mutant.y - 1 + Math.floor(i / 3);
                 if (i == 4
                     || neighbor_x < 0 || neighbor_x >= this.cfg.grid_size
-                    || neighbor_y < 0 || neighbor_y >= this.cfg.grid_size
-                )
+                    || neighbor_y < 0 || neighbor_y >= this.cfg.grid_size)
                     continue;
 
                 let victim = this.grid[neighbor_y][neighbor_x];
@@ -75,17 +91,11 @@ class GameModelImpl {
                 }
             }
         }
-
-        if (this.population.length > this.cfg.food_shortage_limit) {
-            rand_shuffle(this.population);
-            this.population = this.population.slice(0, Math.floor(this.population.length/2));
-        }
-
-        this.refresh_grid();
     }
 
-    reproductives(sex) {
-        return this.population.filter(c => !c.is_radioactive && c.sex==sex && c.age>=this.cfg.reproductive_age);
+    kill_half_population() {
+        rand_shuffle(this.population);
+        this.population = this.population.slice(0, Math.floor(this.population.length / 2));
     }
 
     refresh_grid() {
@@ -119,8 +129,8 @@ class Creature {
             let neighbor_x = mom.x - 1 + i%3;
             let neighbor_y = mom.y - 1 + Math.floor(i/3);
             if (i == 4
-                || neighbor_x < 0 || neighbor_x >= this.cfg.grid_size
-                || neighbor_y < 0 || neighbor_y >= this.cfg.grid_size
+                || neighbor_x < 0 || neighbor_x >= cfg.grid_size
+                || neighbor_y < 0 || neighbor_y >= cfg.grid_size
             )
                 continue;
 
