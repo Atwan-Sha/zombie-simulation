@@ -36,6 +36,7 @@ class Creature {
         this.sex = rand_choice(cfg.sexes);
         this.color = rand_choice(cfg.colors);
         this.age = 0;
+        this.repr_age = cfg.reproductive_age;
         this.name = rand_choice(this.sex=="Male" ? cfg.male_names : cfg.female_names);
         this.is_radioactive = Math.random() < cfg.mutation_chance;
         this.x = x;
@@ -44,14 +45,21 @@ class Creature {
     }
 
     toString() {
-        return `${this.age}${this.sex[0]}${this.color[0].toLowerCase()}${this.is_radioactive?"X":"-"}[${this.x},${this.y}]${this.name}`;
+        let color = ascii_clr();
+        if (this.sex == "Male")   color = this.age<this.repr_age ? ascii_clr(233,123) : ascii_clr(233,39);
+        if (this.sex == "Female") color = this.age<this.repr_age ? ascii_clr(233,218) : ascii_clr(233,171);
+        if (this.is_radioactive)  color = ascii_clr(234,112);
+        return color + `${this.age}${this.sex[0]}${this.color[0].toLowerCase()}${this.is_radioactive?"X":"-"}[${this.x},${this.y}]${this.name}` + COLOR_RESET;
     }
 }
 
 
 
 
-
+const COLOR_RESET = "\x1B[0;0m";
+function ascii_clr(fg, bg) {
+    return fg||bg ? `\x1B[38;5;${fg}m\x1B[48;5;${bg}m` : COLOR_RESET;
+}
 function randint(max) {
     return Math.floor(Math.random() * max);
 }
@@ -67,7 +75,7 @@ function rand_shuffle(array) {
 function disp_neighb(neighb_array) {
     let s = "[";
     for (let [c, x, y] of neighb_array) {
-        s += (c ? String(c) : `____[${x},${y}]`) + ", ";
+        s += (c ? String(c) : `__[${x},${y}]`) + ", ";
     }
     s += "]";
     return s;
@@ -225,7 +233,7 @@ class GameModelImpl {
         for (let row of this.grid) {
             const WIDTH = 9;
             let s = "-".repeat((WIDTH+3) * row.length) + "\n";
-            for (let el of row) { s += "| " + (el ? String(el).split("]")[0]+"]" : " ".repeat(WIDTH)) + " "; }; s+="|\n";
+            for (let el of row) { s += "| " + (el ? String(el).split("]")[0]+"]"+COLOR_RESET : " ".repeat(WIDTH)) + " "; }; s+="|\n";
             for (let el of row) { s += "| " + (el ? "  "+String(el).split("]")[1]+"  " : " ".repeat(WIDTH)) + " "; }; s+="|";
             console.log(s);
         }
