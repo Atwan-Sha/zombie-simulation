@@ -61,11 +61,19 @@ class GameModelImpl {
     }
 
     do_breeding() {
-        for (let dad of this.reproductives("Male")) {
-            for (let mom of this.reproductives("Female")) {
-                let child = Creature.from_mom(this.cfg, mom);
-                if (child)
-                    this.population.push(child);
+        let repr_males = this.reproductives("Male").length;
+        for (let mom of this.reproductives("Female")) {
+            let empty_neighbors = this.neighbors_pred(mom.x, mom.y, c => !c);
+            rand_shuffle(empty_neighbors);
+            empty_neighbors = empty_neighbors.slice(0, repr_males);
+            console.log("BREEDING", mom, empty_neighbors);
+            console.assert(Array.isArray(empty_neighbors));
+            for (let [_, child_x, child_y] of empty_neighbors) {
+                let child = new Creature(this.cfg);
+                child.color = mom.color;
+                child.x = child_x;
+                child.y = child_y;
+                this.population.push(child);
             }
         }
     }
@@ -74,21 +82,33 @@ class GameModelImpl {
         return this.population.filter(c => !c.is_radioactive && c.sex==sex && c.age>=this.cfg.reproductive_age);
     }
 
+    neighbors_pred(x, y, pred) {
+        let res = [];
+        for (let i = 0; i < 9; ++i) {
+            let neighbor_x = x - 1 + i % 3;
+            let neighbor_y = y - 1 + Math.floor(i / 3);
+            if (i == 4
+                || neighbor_x < 0 || neighbor_x >= this.cfg.grid_size
+                || neighbor_y < 0 || neighbor_y >= this.cfg.grid_size)
+                continue;
+
+            let neighbor = this.grid[neighbor_y][neighbor_x];
+            if (pred(neighbor)) {
+                res.push([neighbor, neighbor_x, neighbor_y]);
+            }
+        }
+        return res;
+    }
+
     do_mutations() {
         for (let mutant of this.population.filter(c => c.is_radioactive)) {
-            for (let i = 0; i < 9; ++i) {
-                let neighbor_x = mutant.x - 1 + i % 3;
-                let neighbor_y = mutant.y - 1 + Math.floor(i / 3);
-                if (i == 4
-                    || neighbor_x < 0 || neighbor_x >= this.cfg.grid_size
-                    || neighbor_y < 0 || neighbor_y >= this.cfg.grid_size)
-                    continue;
-
-                let victim = this.grid[neighbor_y][neighbor_x];
-                if (victim && !victim.is_radioactive) {
-                    victim.is_radioactive = true; //TODO: test if this changes the outer loop
-                    break;
-                }
+            let alive_non_mutant_neighbors = this.neighbors_pred(mutant.x, mutant.y, c => c && !c.is_radioactive);
+            console.log("MUTATION", mutant, alive_non_mutant_neighbors);
+            console.assert(Array.isArray(alive_non_mutant_neighbors));
+            if (alive_non_mutant_neighbors.length) {
+                let [victim, _x, _y] = rand_choice(alive_non_mutant_neighbors);
+                victim.is_radioactive = true;
+                break;
             }
         }
     }
@@ -119,28 +139,6 @@ class Creature {
         this.age = 0;
         this.name = rand_choice(possible_names);
         this.is_radioactive = Math.random() < cfg.mutation_chance;
-    }
-
-    static from_mom(cfg, mom) {
-        let c = new Creature(cfg);
-        c.color = mom.color;
-        let empty_neighbors = [];
-        for (let i = 0; i < 9; ++i) {
-            let neighbor_x = mom.x - 1 + i%3;
-            let neighbor_y = mom.y - 1 + Math.floor(i/3);
-            if (i == 4
-                || neighbor_x < 0 || neighbor_x >= cfg.grid_size
-                || neighbor_y < 0 || neighbor_y >= cfg.grid_size
-            )
-                continue;
-
-            if (!this.grid[neighbor_y][neighbor_x])
-                empty_neighbors.push([neighbor_x, neighbor_y]);
-        }
-        if (!empty_neighbors.length)
-            return null;
-        [c.x, c.y] = rand_choice(empty_neighbors);
-        return c;
     }
 
     static create_rand(cfg) {
