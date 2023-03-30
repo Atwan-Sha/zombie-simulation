@@ -1,7 +1,7 @@
 class GameModel {
     constructor(cfg) {
         const default_cfg = {
-            grid_size: 10,
+            grid_size: 80,
             reproductive_age: 2,
             normal_death_age: 10,
             mutant_death_age: 50,
@@ -19,6 +19,65 @@ class GameModel {
         return this.impl.get_grid(timestep);
     }
 }
+
+class Creature {
+    sex;
+    color;
+    age;
+    name;
+    is_radioactive;
+    x; y;
+
+    constructor(cfg) {
+        this.sex = rand_choice(cfg_sexes);
+        this.age = 0;
+        this.name = rand_choice(this.sex=="Male" ? cfg_male_names : cfg_female_names);
+        this.is_radioactive = Math.random() < cfg.mutation_chance;
+    }
+
+    static create_rand(cfg) {
+        let c = new Creature(cfg);
+        c.color = rand_choice(cfg_colors);
+        c.x = randint(cfg.grid_size - 1);
+        c.y = randint(cfg.grid_size - 1);
+        return c;
+    }
+
+    toString() {
+        return `${this.age}${this.sex[0]}${this.color[0].toLowerCase()}${this.is_radioactive?"X":"-"}[${this.x},${this.y}]${this.name}`;
+    }
+}
+
+const cfg_sexes = ["Male", "Female"];
+const cfg_colors = ["White", "Red", "Green", "Yellow", "Purple"];
+const cfg_male_names = [" Bob ", " Jon ", " Sid ", " Sal ", " Ike "];
+const cfg_female_names = ["alice", "jessy", "stasy", "becky", "susie"];
+
+
+
+
+function randint(max) {
+    return Math.floor(Math.random() * max);
+}
+function rand_choice(array) {
+    return array[randint(array.length)];
+}
+function rand_shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+function disp_neighb(neighb_array) {
+    let s = "[";
+    for (let [c, x, y] of neighb_array) {
+        s += (c ? String(c) : `____[${x},${y}]`) + ", ";
+    }
+    s += "]";
+    return s;
+}
+
+
 
 
 
@@ -67,8 +126,8 @@ class GameModelImpl {
         for (let mom of this.reproductives("Female")) {
             let empty_neighbors = this.neighbors_pred(mom.x, mom.y, c => !c);
             rand_shuffle(empty_neighbors);
+            console.log("  ", String(mom), "   empty_neighbors:", disp_neighb(empty_neighbors));
             empty_neighbors = empty_neighbors.slice(0, repr_males);
-            console.log("  ", String(mom), empty_neighbors);
             console.assert(Array.isArray(empty_neighbors));
             for (let [_, child_x, child_y] of empty_neighbors) {
                 let child = new Creature(this.cfg);
@@ -108,7 +167,7 @@ class GameModelImpl {
         console.log("Mutations:");
         for (let mutant of this.population.filter(c => c.is_radioactive)) {
             let alive_non_mutant_neighbors = this.neighbors_pred(mutant.x, mutant.y, c => c && !c.is_radioactive);
-            console.log("  mutation", String(mutant), alive_non_mutant_neighbors);
+            console.log("  mutation", String(mutant), "  alive_non_mutants:", disp_neighb(alive_non_mutant_neighbors));
             console.assert(Array.isArray(alive_non_mutant_neighbors));
             if (alive_non_mutant_neighbors.length) {
                 let [victim, _x, _y] = rand_choice(alive_non_mutant_neighbors);
@@ -143,61 +202,15 @@ class GameModelImpl {
     }
 }
 
-class Creature {
-    sex;
-    color;
-    age;
-    name;
-    is_radioactive;
-    x; y;
 
-    constructor(cfg) {
-        this.sex = rand_choice(sexes);
-        this.age = 0;
-        this.name = rand_choice(this.sex=="Male" ? male_names : female_names);
-        this.is_radioactive = Math.random() < cfg.mutation_chance;
-    }
 
-    static create_rand(cfg) {
-        let c = new Creature(cfg);
-        c.color = rand_choice(colors);
-        c.x = randint(cfg.grid_size - 1);
-        c.y = randint(cfg.grid_size - 1);
-        return c;
-    }
 
-    toString() {
-        return `${this.age}${this.sex[0]}${this.color[0].toLowerCase()}${this.is_radioactive?"X":"-"}[${this.x},${this.y}]${this.name}`;
-    }
+
+if (typeof require !== 'undefined' && require.main === module) {
+    let model = new GameModel({
+        initial_population: 10,
+        grid_size: 10,
+        mutation_chance: 0.1,
+    })
+    model.get_grid(7);
 }
-
-function randint(max) {
-    return Math.floor(Math.random() * max);
-}
-function rand_choice(array) {
-    return array[randint(array.length)];
-}
-function rand_shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
-
-const sexes = ["Male", "Female"];
-const colors = ["White", "Red", "Green"];
-const male_names = [" Bob ", " Jon "];
-const female_names = ["alice", "jessy"];
-
-
-
-
-
-
-
-let model = new GameModel({
-    initial_population: 5,
-    reproductive_age: 2,
-    grid_size: 10,
-})
-model.get_grid(7);
