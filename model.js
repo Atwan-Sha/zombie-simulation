@@ -6,7 +6,7 @@ class GameModel {
             normal_death_age: 10,
             mutant_death_age: 50,
             initial_population: 5,
-            mutation_chance: 0.2,
+            mutation_chance: 0.02,
             food_shortage_limit: 1000,
         }
         for (let k of Object.keys(cfg)) {
@@ -39,6 +39,7 @@ class GameModelImpl {
             throw new Error("cannot go backwards in time yet, create new GameModel");
         }
         while (this.curr_timestep < timestep) {
+            console.log(`\n\n\n====================================== TURN ${this.curr_timestep+1} ======================================`)
             this.turn();
             ++this.curr_timestep;
         }
@@ -62,20 +63,23 @@ class GameModelImpl {
 
     do_breeding() {
         let repr_males = this.reproductives("Male").length;
+        console.log("Breeing for", repr_males, "males");
         for (let mom of this.reproductives("Female")) {
             let empty_neighbors = this.neighbors_pred(mom.x, mom.y, c => !c);
             rand_shuffle(empty_neighbors);
             empty_neighbors = empty_neighbors.slice(0, repr_males);
-            console.log("BREEDING", mom, empty_neighbors);
+            console.log("  ", String(mom), empty_neighbors);
             console.assert(Array.isArray(empty_neighbors));
             for (let [_, child_x, child_y] of empty_neighbors) {
                 let child = new Creature(this.cfg);
                 child.color = mom.color;
                 child.x = child_x;
                 child.y = child_y;
+                console.log("    child:", String(child));
                 this.population.push(child);
             }
         }
+        console.log("------\n");
     }
 
     reproductives(sex) {
@@ -101,16 +105,18 @@ class GameModelImpl {
     }
 
     do_mutations() {
+        console.log("Mutations:");
         for (let mutant of this.population.filter(c => c.is_radioactive)) {
             let alive_non_mutant_neighbors = this.neighbors_pred(mutant.x, mutant.y, c => c && !c.is_radioactive);
-            console.log("MUTATION", mutant, alive_non_mutant_neighbors);
+            console.log("  mutation", String(mutant), alive_non_mutant_neighbors);
             console.assert(Array.isArray(alive_non_mutant_neighbors));
             if (alive_non_mutant_neighbors.length) {
                 let [victim, _x, _y] = rand_choice(alive_non_mutant_neighbors);
                 victim.is_radioactive = true;
-                break;
+                console.log("      victim:", String(victim));
             }
         }
+        console.log("------\n");
     }
 
     kill_half_population() {
@@ -122,6 +128,17 @@ class GameModelImpl {
         this.grid = Array.from(Array(this.cfg.grid_size), () => Array(this.cfg.grid_size));
         for (let c of this.population) {
             this.grid[c.y][c.x] = c;
+        }
+        this.display_grid();
+    }
+
+    display_grid() {
+        for (let row of this.grid) {
+            const WIDTH = 9;
+            let s = "-".repeat((WIDTH+3) * row.length) + "\n";
+            for (let el of row) { s += "| " + (el ? String(el).split("]")[0]+"]" : " ".repeat(WIDTH)) + " "; }; s+="|\n";
+            for (let el of row) { s += "| " + (el ? "  "+String(el).split("]")[1]+"  " : " ".repeat(WIDTH)) + " "; }; s+="|";
+            console.log(s);
         }
     }
 }
@@ -137,7 +154,7 @@ class Creature {
     constructor(cfg) {
         this.sex = rand_choice(sexes);
         this.age = 0;
-        this.name = rand_choice(possible_names);
+        this.name = rand_choice(this.sex=="Male" ? male_names : female_names);
         this.is_radioactive = Math.random() < cfg.mutation_chance;
     }
 
@@ -150,7 +167,7 @@ class Creature {
     }
 
     toString() {
-        return `${this.age}`// ${this.sex} ${this.color} ${this.name} ${this.is_radioactive} ${this.x} ${this.y}`
+        return `${this.age}${this.sex[0]}${this.color[0].toLowerCase()}${this.is_radioactive?"X":"-"}[${this.x},${this.y}]${this.name}`;
     }
 }
 
@@ -168,8 +185,9 @@ function rand_shuffle(array) {
 }
 
 const sexes = ["Male", "Female"];
-const colors = ["White", "Red", "Green"]
-const possible_names = ["Alice", "Bob"];
+const colors = ["White", "Red", "Green"];
+const male_names = [" Bob ", " Jon "];
+const female_names = ["alice", "jessy"];
 
 
 
@@ -182,7 +200,4 @@ let model = new GameModel({
     reproductive_age: 2,
     grid_size: 10,
 })
-let grid = model.get_grid(7);
-for (let row of grid) {
-    console.log(String(row));
-}
+model.get_grid(7);
