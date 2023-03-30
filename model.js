@@ -8,6 +8,10 @@ class GameModel {
             initial_population: 5,
             mutation_chance: 0.02,
             food_shortage_limit: 1000,
+            sexes: ["Male", "Female"],
+            colors: ["White", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow"],
+            male_names: [" Bob ", " Jon ", " Sid ", " Sal ", " Ike "],
+            female_names: ["alice", "jessy", "stasy", "becky", "susie"],
         }
         for (let k of Object.keys(cfg)) {
             if (!(k in default_cfg))
@@ -29,18 +33,13 @@ class Creature {
     x; y;
 
     constructor(cfg) {
-        this.sex = rand_choice(cfg_sexes);
+        this.sex = rand_choice(cfg.sexes);
+        this.color = rand_choice(cfg.colors);
         this.age = 0;
-        this.name = rand_choice(this.sex=="Male" ? cfg_male_names : cfg_female_names);
+        this.name = rand_choice(this.sex=="Male" ? cfg.male_names : cfg.female_names);
         this.is_radioactive = Math.random() < cfg.mutation_chance;
-    }
-
-    static create_rand(cfg) {
-        let c = new Creature(cfg);
-        c.color = rand_choice(cfg_colors);
-        c.x = randint(cfg.grid_size - 1);
-        c.y = randint(cfg.grid_size - 1);
-        return c;
+        this.x = randint(cfg.grid_size - 1); //FIXME: check if the coordinate is uninhabited
+        this.y = randint(cfg.grid_size - 1);
     }
 
     toString() {
@@ -48,10 +47,6 @@ class Creature {
     }
 }
 
-const cfg_sexes = ["Male", "Female"];
-const cfg_colors = ["White", "Red", "Green", "Yellow", "Purple"];
-const cfg_male_names = [" Bob ", " Jon ", " Sid ", " Sal ", " Ike "];
-const cfg_female_names = ["alice", "jessy", "stasy", "becky", "susie"];
 
 
 
@@ -89,7 +84,7 @@ class GameModelImpl {
         console.log("initializing with cfg", cfg);
         this.curr_timestep = 0;
         this.cfg = cfg;
-        this.population = Array.from(Array(cfg.initial_population), () => Creature.create_rand(cfg));
+        this.population = Array.from(Array(cfg.initial_population), () => new Creature(cfg));
         this.refresh_grid();
     }
 
