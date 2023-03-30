@@ -32,14 +32,15 @@ class Creature {
     is_radioactive;
     x; y;
 
-    constructor(cfg) {
+    constructor(cfg, grid, x, y) {
         this.sex = rand_choice(cfg.sexes);
         this.color = rand_choice(cfg.colors);
         this.age = 0;
         this.name = rand_choice(this.sex=="Male" ? cfg.male_names : cfg.female_names);
         this.is_radioactive = Math.random() < cfg.mutation_chance;
-        this.x = randint(cfg.grid_size - 1); //FIXME: check if the coordinate is uninhabited
-        this.y = randint(cfg.grid_size - 1);
+        this.x = x;
+        this.y = y;
+        grid[y][x] = this;
     }
 
     toString() {
@@ -84,8 +85,21 @@ class GameModelImpl {
         console.log("initializing with cfg", cfg);
         this.curr_timestep = 0;
         this.cfg = cfg;
-        this.population = Array.from(Array(cfg.initial_population), () => new Creature(cfg));
-        this.refresh_grid();
+        const initial_coords = new Set();
+        while (initial_coords.size < cfg.initial_population) {
+            initial_coords.add(randint(cfg.grid_size**2-1));
+        }
+        console.log(initial_coords);
+        let debug_str = "";
+        for (let [i, coord] of Array.from(initial_coords).entries()) {
+            if (i % 10 == 0) debug_str += "\n";
+            else if (i % 5 == 0) debug_str += "  ";
+            debug_str += String(coord) + " ";
+        }
+        console.log(debug_str);
+        this.grid = Array.from(Array(cfg.grid_size), () => Array(cfg.grid_size));
+        this.population = Array.from(initial_coords, crd => new Creature(cfg, this.grid, crd%cfg.grid_size, Math.floor(crd/cfg.grid_size)));
+        this.display_grid();
     }
 
     get_grid(timestep) {
@@ -93,7 +107,7 @@ class GameModelImpl {
             throw new Error("cannot go backwards in time yet, create new GameModel");
         }
         while (this.curr_timestep < timestep) {
-            console.log(`\n\n\n====================================== TURN ${this.curr_timestep+1} ======================================`)
+            console.log(`\n\n\n====================================== TURN ${this.curr_timestep+1} ======================================`);
             this.turn();
             ++this.curr_timestep;
         }
@@ -106,7 +120,9 @@ class GameModelImpl {
         this.do_mutations();
         if (this.population.length > this.cfg.food_shortage_limit)
             this.kill_half_population();
-        this.refresh_grid();
+        this.do_movement();
+        this.check_grid();
+        this.display_grid();
     }
 
     do_aging() {
@@ -125,10 +141,8 @@ class GameModelImpl {
             empty_neighbors = empty_neighbors.slice(0, repr_males);
             console.assert(Array.isArray(empty_neighbors));
             for (let [_, child_x, child_y] of empty_neighbors) {
-                let child = new Creature(this.cfg);
+                let child = new Creature(this.cfg, this.grid, child_x, child_y);
                 child.color = mom.color;
-                child.x = child_x;
-                child.y = child_y;
                 console.log("    child:", String(child));
                 this.population.push(child);
             }
@@ -178,12 +192,33 @@ class GameModelImpl {
         this.population = this.population.slice(0, Math.floor(this.population.length / 2));
     }
 
-    refresh_grid() {
-        this.grid = Array.from(Array(this.cfg.grid_size), () => Array(this.cfg.grid_size));
+    do_movement() {
+        console.log("Movements:");
         for (let c of this.population) {
-            this.grid[c.y][c.x] = c;
+            let empty_neighbors = this.neighbors_pred(c.x, c.y, c => !c);
+            if (!empty_neighbors.length)
+                continue;
+            let [_, dest_x, dest_y] = rand_choice(empty_neighbors);
+            console.log("    movement", String(c), `  --> [${dest_x},${dest_y}]`);
+            this.grid[c.y][c.x] = null;
+            c.x = dest_x;
+            c.y = dest_y;
+            this.grid[dest_y][dest_x] = c;
         }
-        this.display_grid();
+        console.log("------\n");
+    }
+
+    check_grid() {
+        for (let i = 0; i < this.population.length; ++i) {
+            let c1 = this.population[i];
+            if (this.grid[c1.y][c1.x] != c1)
+                throw new Error("wrong population-grid correspondence" + String(c1) + String(this.grid[c1.y][c1.x]));
+            for (let j = i+1; j < this.population.length; ++j) {
+                let c2 = this.population[j];
+                if (c1.x == c2.x && c1.y == c2.y)
+                    throw new Error("same coordinates " + String(c1) + "  " + String(c2));
+            }
+        }
     }
 
     display_grid() {
@@ -203,7 +238,7 @@ class GameModelImpl {
 
 if (typeof require !== 'undefined' && require.main === module) {
     let model = new GameModel({
-        initial_population: 10,
+        initial_population: 30,
         grid_size: 10,
         mutation_chance: 0.1,
     })
