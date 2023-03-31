@@ -196,8 +196,16 @@ class GameModelImpl {
     }
 
     kill_half_population() {
+        console.log("Food shortage:");
+        console.log("  too many creatures:", this.population.length);
         rand_shuffle(this.population);
-        this.population = this.population.slice(0, Math.floor(this.population.length / 2));
+        let survivors = Math.floor(this.population.length / 2);
+        for (let c of this.population.slice(survivors)) {
+            this.grid[c.y][c.x] = null;
+        }
+        this.population = this.population.slice(0, survivors);
+        console.log("  after famine only", this.population.length, "left");
+        console.log("------\n");
     }
 
     do_movement() {
@@ -246,9 +254,10 @@ class GameModelImpl {
 
 if (typeof require !== 'undefined' && require.main === module) {
     let model = new GameModel({
-        initial_population: 30,
+        initial_population: 10,
         grid_size: 10,
-        mutation_chance: 0.1,
+        mutation_chance: 0.04,
+        food_shortage_limit: 55,
     })
-    model.get_grid(7);
+    model.get_grid(9);
 }
