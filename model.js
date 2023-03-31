@@ -10,8 +10,8 @@ class GameModel {
             food_shortage_limit: 1000,
             sexes: ["Male", "Female"],
             colors: ["White", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow"],
-            male_names: [" Bob ", " Jon ", " Sid ", " Sal ", " Ike "],
-            female_names: ["alice", "jessy", "stasy", "becky", "susie"],
+            male_names: [" Bob ", " Jon ", " Sid ", " Sal ", " Ike ", " Abe ", " Ben ", " Dan ", " Eli ", " Fox ", " Gus ", " Hal ", " Ian ", " Jay ", " Kim ", " Leo ", " Max ", " Ned ", " Oli ", " Pax ", " Ray ", " Sam ", " Ted ", " Uwe ", " Van ", " Wes ", " Zak "],
+            female_names: ["alice", "jessy", "stasy", "becky", "susie", "emily", "sarah", "avery", "grace", "elsie", "hazel", "fiona", "holly", "erica", "karen", "maria", "nancy", "laura", "amber", "sadie", "julia", "paige", "riley", "casey"],
         }
         for (let k of Object.keys(cfg)) {
             if (!(k in default_cfg))
@@ -80,6 +80,10 @@ function disp_neighb(neighb_array) {
     s += "]";
     return s;
 }
+function sleep(ms) {
+    const stop = new Date().getTime() + ms;
+    while (new Date().getTime() < stop);
+}
 
 
 
@@ -97,14 +101,6 @@ class GameModelImpl {
         while (initial_coords.size < cfg.initial_population) {
             initial_coords.add(randint(cfg.grid_size**2-1));
         }
-        console.log(initial_coords);
-        let debug_str = "";
-        for (let [i, coord] of Array.from(initial_coords).entries()) {
-            if (i % 10 == 0) debug_str += "\n";
-            else if (i % 5 == 0) debug_str += "  ";
-            debug_str += String(coord) + " ";
-        }
-        console.log(debug_str);
         this.grid = Array.from(Array(cfg.grid_size), () => Array(cfg.grid_size));
         this.population = Array.from(initial_coords, crd => new Creature(cfg, this.grid, crd%cfg.grid_size, Math.floor(crd/cfg.grid_size)));
         this.display_grid();
@@ -136,7 +132,14 @@ class GameModelImpl {
     do_aging() {
         for (let c of this.population)
             c.age++;
-        this.population = this.population.filter(c => c.age < (c.is_radioactive ? this.cfg.mutant_death_age : this.cfg.normal_death_age));
+        const is_young = c => c.age < (c.is_radioactive ? this.cfg.mutant_death_age : this.cfg.normal_death_age);
+        for (let i = 0; i < this.cfg.grid_size; ++i) {
+            for (let j = 0; j < this.cfg.grid_size; ++j) {
+                if (this.grid[i][j] && !is_young(this.grid[i][j]))
+                    this.grid[i][j] = null;
+            }
+        }
+        this.population = this.population.filter(is_young);
     }
 
     do_breeding() {
@@ -235,6 +238,12 @@ class GameModelImpl {
                     throw new Error("same coordinates " + String(c1) + "  " + String(c2));
             }
         }
+        for (let row of this.grid) {
+            for (let c of row) {
+                if (c && !this.population.includes(c))
+                    throw new Error("grid contains dead body" + String(c));
+            }
+        }
     }
 
     display_grid() {
@@ -256,8 +265,11 @@ if (typeof require !== 'undefined' && require.main === module) {
     let model = new GameModel({
         initial_population: 10,
         grid_size: 10,
-        mutation_chance: 0.04,
+        mutation_chance: 0.02,
         food_shortage_limit: 55,
-    })
-    model.get_grid(9);
+    });
+    for (let i = 0; i < 35; ++i) {
+        model.get_grid(i);
+        sleep(600);
+    }
 }
