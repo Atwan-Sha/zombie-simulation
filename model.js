@@ -46,8 +46,8 @@ class Creature {
 
     toString() {
         let color = ascii_clr();
-        if (this.sex == "Male")   color = this.age<this.repr_age ? ascii_clr(233,123) : ascii_clr(233,39);
-        if (this.sex == "Female") color = this.age<this.repr_age ? ascii_clr(233,218) : ascii_clr(233,171);
+        if (this.sex == "Male")   color = this.age<this.repr_age ? ascii_clr(244,87) : ascii_clr(232,75);
+        if (this.sex == "Female") color = this.age<this.repr_age ? ascii_clr(244,225) : ascii_clr(232,218);
         if (this.is_radioactive)  color = ascii_clr(234,112);
         return color + `${this.age}${this.sex[0]}${this.color[0].toLowerCase()}${this.is_radioactive?"X":"-"}[${this.x},${this.y}]${this.name}` + COLOR_RESET;
     }
