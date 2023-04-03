@@ -1,3 +1,6 @@
+import React from 'react';
+export default function Model() {
+
 class GameModel {
     constructor(cfg) {
         for (let prop of ["grid_size", "reproductive_age", "initial_population"]) {
@@ -112,4 +115,12 @@ let model = new GameModel({
 let grid = model.get_grid(2);
 for (let row of grid) {
     console.log(String(row));
+}
+
+return grid;
+
+
+
+
+
 }
