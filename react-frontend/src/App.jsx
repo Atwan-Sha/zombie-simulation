@@ -1,13 +1,14 @@
-import './App.css'
-import Button from './Components.jsx'
+import "./App.css";
+import { Button, Grid } from "./Components.jsx";
 
 function App() {
   return (
     <>
       <h1>Hello Zombies!</h1>
       <Button />
+      <Grid />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
