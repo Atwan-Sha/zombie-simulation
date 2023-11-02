@@ -1,4 +1,5 @@
-import { CounterButton, Grid } from "./view-components/Components.jsx";
+import CounterButton from "./view-components/CounterButton.jsx";
+import Grid from "./view-components/Grid.jsx";
 import TEST_GRID from "./models/test-data.js";
 
 export default function App() {
