@@ -84,12 +84,16 @@ button:focus-visible {
   border: 1px solid white;
   color: black;
 }
-/* 
-.one {grid-row: 0/4; grid-column: 0/4;}
 
-.two {grid-row: 0/4; grid-column: 1/4;}
+.male {
+  /* male-graphic */
+}
+.female {
+  /* female-graphic */
+}
+.is-radioactive {
+  /* radioactive-graphic: glowing / zombie / alien etc... */
+}
 
-.three {grid-row: 0/4; grid-column: 2/4;}
 
-.four {grid-row: 0/4; grid-column: 3/4;} */
 

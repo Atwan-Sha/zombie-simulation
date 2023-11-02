@@ -7,7 +7,7 @@ export default function App() {
     <>
       <h1>Hello Zombies!</h1>
       <CounterButton />
-      <Grid gridData={TEST_GRID} />
+      <Grid gridSize={10} gridData={TEST_GRID} />
     </>
   );
 }
