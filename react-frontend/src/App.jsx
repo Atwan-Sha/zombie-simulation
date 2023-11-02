@@ -1,14 +1,12 @@
-import { Button, Grid } from "./Components.jsx";
-import TEST_GRID from "./testData.js";
+import { CounterButton, Grid } from "./view-components/Components.jsx";
+import TEST_GRID from "./models/test-data.js";
 
-function App() {
+export default function App() {
   return (
     <>
       <h1>Hello Zombies!</h1>
-      <Button />
+      <CounterButton />
       <Grid gridData={TEST_GRID} />
     </>
   );
 }
-
-export default App;

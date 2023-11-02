@@ -257,6 +257,21 @@ class GameModelImpl {
     }
 }
 
+// if (typeof require !== 'undefined' && require.main === module) {
+//     let model = new GameModel({
+//         initial_population: 10,
+//         grid_size: 10,
+//         mutation_chance: 0.02,
+//         food_shortage_limit: 55,
+//     });
+//     for (let i = 0; i < 35; ++i) {
+//         model.get_grid(i);
+//         sleep(600);
+//     }
+// }
+
+
+
 if (typeof require !== 'undefined' && require.main === module) {
     let model = new GameModel({
         initial_population: 10,
@@ -264,9 +279,12 @@ if (typeof require !== 'undefined' && require.main === module) {
         mutation_chance: 0.02,
         food_shortage_limit: 55,
     });
-    for (let i = 0; i < 35; ++i) {
-        model.get_grid(i);
-        sleep(600);
+    let grid;
+    for (let i = 0; i < 3; ++i) { // receive on/off state from react
+        grid = model.get_grid(i); // send grid to react
+        // console.log(grid);
+        sleep(800);
     }
+    console.log('GRID: ', grid);
 }
 
