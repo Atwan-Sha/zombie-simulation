@@ -16,7 +16,11 @@ export default function Grid({ gridSize, gridData }) {
   let key = 0;
   gridData.forEach((row) => {
     row.forEach((obj) => {
-      gridCells.push(<Cell key={key} obj={obj} />);
+      if (obj === null || Object.keys(obj).length === 0) {
+        gridCells.push(<EmptyCell key={key} />);
+      } else {
+        gridCells.push(<Cell key={key} obj={obj} />);
+      }
       key++;
     });
   });
@@ -32,41 +36,24 @@ export default function Grid({ gridSize, gridData }) {
 }
 
 function Cell({ obj }) {
-  const objStyle = (obj) => {
-    const style = {
-      backgroundColor:
-        obj === null || Object.keys(obj).length === 0
-          ? "none"
-          : obj.color.toLowerCase(),
-    };
-    return style;
-  };
-
-  const isRadioactive = (obj) => {
-    if (obj === null || Object.keys(obj).length === 0) {
-      return "cell";
-    } else if (obj.is_radioactive === false) {
-      return "cell";
-    } else {
-      return "cell radioactive";
-    }
-  };
-
   return (
-    <div className={isRadioactive(obj)} style={objStyle(obj)}>
-      <p>{obj === null || Object.keys(obj).length === 0 ? "" : obj.name}</p>
+    <div
+      className={obj.is_radioactive ? "cell radioactive" : "cell"}
+      style={{backgroundColor: obj.color.toLowerCase()}}
+    >
+      <p>{obj.name}</p>
       <img
-        className={
-          obj === null || Object.keys(obj).length === 0 ? "hide" : "icon"
-        }
-        src={
-          obj === null || Object.keys(obj).length === 0
-            ? ""
-            : obj.sex === "Female"
-            ? femaleIcon
-            : maleIcon
-        }
+        className="icon"
+        src={obj.sex === "Female" ? femaleIcon : maleIcon}
       />
+    </div>
+  );
+}
+
+function EmptyCell() {
+  return (
+    <div className="cell" style={{ backgroundColor: "none" }}>
+      ---
     </div>
   );
 }
