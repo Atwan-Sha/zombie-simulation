@@ -25,6 +25,8 @@ a:hover {
 
 body {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   display: flex;
   place-items: center;
   min-width: 320px;
@@ -32,7 +34,7 @@ body {
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 2.2em;
   line-height: 1.1;
 }
 
@@ -71,7 +73,7 @@ button:focus-visible {
 
 .grid-container {
   width: 100%;
-  height: 50%;
+  height: 70%;
   border: 5px solid rgb(167, 167, 167);
 
   display: grid;
@@ -81,18 +83,39 @@ button:focus-visible {
 }
 
 .cell {
+  width: 100%;
+  height: 100%;
   border: 1px solid white;
   color: black;
 }
+.cell p {
+  margin: 0;
+  height: 50%;
+}
+.cell img {
+  margin: 0;
+  width: 25px;
+  height: 25px;;
+}
+.cell .hide {
+  display: none;
+}
+
 
 .male {
   /* male-graphic */
 }
+/* <a target="_blank" href="https://icons8.com/icon/1814/male">Male</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a> */
 .female {
   /* female-graphic */
 }
-.is-radioactive {
+/* <a target="_blank" href="https://icons8.com/icon/7696/female">Female</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a> */
+
+.radioactive {
   /* radioactive-graphic: glowing / zombie / alien etc... */
+  width: 70%;
+  height: 70%;
+  border: 10px solid lightgreen;
 }
 
 

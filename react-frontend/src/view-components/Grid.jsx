@@ -1,3 +1,6 @@
+import femaleIcon from "../assets/female-icon-50px.png";
+import maleIcon from "../assets/male-icon-50px.png";
+
 export default function Grid({ gridSize, gridData }) {
   console.log("render grid...");
 
@@ -39,9 +42,31 @@ function Cell({ obj }) {
     return style;
   };
 
+  const isRadioactive = (obj) => {
+    if (obj === null || Object.keys(obj).length === 0) {
+      return "cell";
+    } else if (obj.is_radioactive === false) {
+      return "cell";
+    } else {
+      return "cell radioactive";
+    }
+  };
+
   return (
-    <div className="cell" style={objStyle(obj)}>
-      {obj === null || Object.keys(obj).length === 0 ? "" : obj.color}
+    <div className={isRadioactive(obj)} style={objStyle(obj)}>
+      <p>{obj === null || Object.keys(obj).length === 0 ? "" : obj.name}</p>
+      <img
+        className={
+          obj === null || Object.keys(obj).length === 0 ? "hide" : "icon"
+        }
+        src={
+          obj === null || Object.keys(obj).length === 0
+            ? ""
+            : obj.sex === "Female"
+            ? femaleIcon
+            : maleIcon
+        }
+      />
     </div>
   );
 }
