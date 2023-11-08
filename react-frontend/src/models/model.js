@@ -270,21 +270,24 @@ class GameModelImpl {
 //     }
 // }
 
+// * receive initial params from controller
+// * receive on/off state from controller
+// * send grid to controller
 
-
-if (typeof require !== 'undefined' && require.main === module) {
+export function setup() {
     let model = new GameModel({
         initial_population: 10,
         grid_size: 10,
         mutation_chance: 0.02,
         food_shortage_limit: 55,
     });
-    let grid;
-    for (let i = 0; i < 3; ++i) { // receive on/off state from react
-        grid = model.get_grid(i); // send grid to react
-        // console.log(grid);
-        sleep(800);
-    }
-    console.log('GRID: ', grid);
+    return model;
 }
+
+export function run(model, i) {
+    let grid = model.get_grid(i);
+    return grid;
+}
+
+
 

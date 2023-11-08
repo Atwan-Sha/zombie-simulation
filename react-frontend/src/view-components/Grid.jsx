@@ -1,8 +1,13 @@
+import { useState } from "react";
 import femaleIcon from "../assets/female-icon-50px.png";
 import maleIcon from "../assets/male-icon-50px.png";
 
 export default function Grid({ gridSize, gridData }) {
   console.log("render grid...");
+
+  // const [grid, setGrid] = useState([]);
+  // setGrid(gridData);
+
 
   const getGridSize = (size) => {
     const style = {
