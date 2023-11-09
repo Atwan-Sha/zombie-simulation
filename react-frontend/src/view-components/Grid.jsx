@@ -8,7 +8,6 @@ export default function Grid({ gridSize, gridData }) {
   // const [grid, setGrid] = useState([]);
   // setGrid(gridData);
 
-
   const getGridSize = (size) => {
     const style = {
       gridTemplateRows: `repeat(${size}, 1fr)`,
@@ -31,7 +30,6 @@ export default function Grid({ gridSize, gridData }) {
   });
 
   return (
-    // generate size of grid from input cfg, modify style prop
     <>
       <div className="grid-container" style={getGridSize(gridSize)}>
         {gridCells}

@@ -71,11 +71,13 @@ button:focus-visible {
   }
 }
 
+/* ! fix grid relative to size (not just 10x10) */
 .grid-container {
-  width: 100%;
-  height: 70%;
+  /* box-sizing: border-box; */
+  width: 700px;
+  height: 700px;
   border: 5px solid rgb(167, 167, 167);
-
+  border-radius: 2%;
   display: grid;
   grid-template-rows: repeat(10, 1fr);
   grid-template-columns: repeat(10, 1fr);
@@ -83,13 +85,16 @@ button:focus-visible {
 }
 
 .cell {
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
-  border: 1px solid white;
+  border: 5px solid #242424;
+  border-radius: 20%;
   color: black;
 }
 .cell p {
   margin: 0;
+  width: 100%;
   height: 50%;
 }
 .cell img {
@@ -97,8 +102,14 @@ button:focus-visible {
   width: 25px;
   height: 25px;;
 }
-.cell .hide {
+.cell.hide {
   display: none;
+}
+.cell.radioactive {
+  /* radioactive-graphic: glowing / zombie / alien etc... */
+  border: 5px solid rgb(0, 255, 0);
+  border-radius: 50%;
+  filter: brightness(70%);
 }
 
 
@@ -111,12 +122,6 @@ button:focus-visible {
 }
 /* <a target="_blank" href="https://icons8.com/icon/7696/female">Female</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a> */
 
-.radioactive {
-  /* radioactive-graphic: glowing / zombie / alien etc... */
-  width: 70%;
-  height: 70%;
-  border: 10px solid lightgreen;
-}
 
 
 

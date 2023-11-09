@@ -26,14 +26,14 @@ export default function App() {
   const handleClick = () => {
     setGrid(run(model, i));
     count(++i);
-    console.log('CLICK DEBUG: ', i);
+    console.log('CLICK DEBUG: ', i, model.impl.cfg.grid_size);
   };
 
   return (
     <>
       <h1>Hello Zombies!</h1>
       <button onClick={handleClick}>STEP</button>
-      <Grid gridSize={10} gridData={grid} />
+      <Grid gridSize={model.impl.cfg.grid_size} gridData={grid} />
     </>
   );
 }

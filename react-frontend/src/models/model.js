@@ -273,10 +273,11 @@ class GameModelImpl {
 // * receive initial params from controller
 // * receive on/off state from controller
 // * send grid to controller
+// ! de-couple code as much as possible
 
 export function setup() {
     let model = new GameModel({
-        initial_population: 10,
+        initial_population: 20,
         grid_size: 10,
         mutation_chance: 0.02,
         food_shortage_limit: 55,
