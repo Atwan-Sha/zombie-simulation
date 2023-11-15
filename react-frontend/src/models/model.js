@@ -103,7 +103,7 @@ class GameModelImpl {
         }
         this.grid = Array.from(Array(cfg.grid_size), () => Array(cfg.grid_size));
         this.population = Array.from(initial_coords, crd => new Creature(cfg, this.grid, crd%cfg.grid_size, Math.floor(crd/cfg.grid_size)));
-        this.display_grid();
+        // this.display_grid();
     }
 
     get_grid(timestep) {
@@ -126,7 +126,7 @@ class GameModelImpl {
             this.kill_half_population();
         this.do_movement();
         this.check_grid();
-        this.display_grid();
+        // this.display_grid();
     }
 
     do_aging() {
@@ -144,21 +144,21 @@ class GameModelImpl {
 
     do_breeding() {
         let repr_males = this.reproductives("Male").length;
-        console.log("Breeing for", repr_males, "males");
+        console.log("Breeding for", repr_males, "males");
         for (let mom of this.reproductives("Female")) {
             let empty_neighbors = this.neighbors_pred(mom.x, mom.y, c => !c);
             rand_shuffle(empty_neighbors);
-            console.log("  ", String(mom), "   empty_neighbors:", disp_neighb(empty_neighbors));
+            // console.log("  ", String(mom), "   empty_neighbors:", disp_neighb(empty_neighbors));
             empty_neighbors = empty_neighbors.slice(0, repr_males);
             console.assert(Array.isArray(empty_neighbors));
             for (let [_, child_x, child_y] of empty_neighbors) {
                 let child = new Creature(this.cfg, this.grid, child_x, child_y);
                 child.color = mom.color;
-                console.log("    child:", String(child));
+                // console.log("    child:", String(child));
                 this.population.push(child);
             }
         }
-        console.log("------\n");
+        // console.log("------\n");
     }
 
     reproductives(sex) {
@@ -187,15 +187,15 @@ class GameModelImpl {
         console.log("Mutations:");
         for (let mutant of this.population.filter(c => c.is_radioactive)) {
             let alive_non_mutant_neighbors = this.neighbors_pred(mutant.x, mutant.y, c => c && !c.is_radioactive);
-            console.log("  mutation", String(mutant), "  alive_non_mutants:", disp_neighb(alive_non_mutant_neighbors));
+            // console.log("  mutation", String(mutant), "  alive_non_mutants:", disp_neighb(alive_non_mutant_neighbors));
             console.assert(Array.isArray(alive_non_mutant_neighbors));
             if (alive_non_mutant_neighbors.length) {
                 let [victim, _x, _y] = rand_choice(alive_non_mutant_neighbors);
                 victim.is_radioactive = true;
-                console.log("      victim:", String(victim));
+                // console.log("      victim:", String(victim));
             }
         }
-        console.log("------\n");
+        // console.log("------\n");
     }
 
     kill_half_population() {
@@ -208,7 +208,7 @@ class GameModelImpl {
         }
         this.population = this.population.slice(0, survivors);
         console.log("  after famine only", this.population.length, "left");
-        console.log("------\n");
+        // console.log("------\n");
     }
 
     do_movement() {
@@ -218,13 +218,13 @@ class GameModelImpl {
             if (!empty_neighbors.length)
                 continue;
             let [_, dest_x, dest_y] = rand_choice(empty_neighbors);
-            console.log("    movement", String(c), `  --> [${dest_x},${dest_y}]`);
+            // console.log("    movement", String(c), `  --> [${dest_x},${dest_y}]`);
             this.grid[c.y][c.x] = null;
             c.x = dest_x;
             c.y = dest_y;
             this.grid[dest_y][dest_x] = c;
         }
-        console.log("------\n");
+        // console.log("------\n");
     }
 
     check_grid() {
@@ -276,6 +276,7 @@ class GameModelImpl {
 // ! de-couple code as much as possible
 
 export function setup() {
+    console.log("-> RUN SETUP");
     let model = new GameModel({
         initial_population: 20,
         grid_size: 10,
