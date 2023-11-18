@@ -1,48 +1,42 @@
 import { useState } from "react";
+import { useReducer } from "react";
 import CounterButton from "./view-components/CounterButton.jsx";
 import Grid from "./view-components/Grid.jsx";
 import TEST_GRID from "./models/test-data.js";
-import { setup, run } from "./models/model.js";
+import { grid_reducer } from "./models/model.js";
 // import {model, handleClick} from "./controllers/controller.js";
-// ! fix proper imports for MVC pattern
-
-// ? react hooks or just outer-scope variables?
-// const model = setup();
-// let grid = [];
-// let i = 0;
 
 export default function App() {
-  console.log("RENDER APP");
-  // ? add test step-button for state change
+  console.log("renderApp");
   // ? useEffect hook
   // ? async function
   // ? implement observer pattern
   // * useReducer hook
 
-  const [model, setModel] = useState(setup);
-  const [grid, setGrid] = useState([]);
-  let [i, count] = useState(0);
+  let [turn, setTurn] = useState(0); // ? need additional counter state to trigger re-render
+  const [grid, dispatch] = useReducer(grid_reducer, []);
 
   const handleStep = () => {
-    setGrid(run(model, i));
-    count(++i);
-    console.log("CLICK DEBUG: ", i, model.impl.cfg.grid_size);
+    setTurn(++turn);
+    dispatch({
+      type: "update",
+    });
   };
 
   const handleReset = () => {
-    setModel(setup());
-    setGrid([]);
-    count(0);
-    console.log("=========== RESET =============");
-  }
-
+    setTurn(0);
+    dispatch({
+      type: "reset",
+    });
+  };
 
   return (
     <>
       <h1>Hello Zombies!</h1>
+      <p>{turn}</p>
       <button onClick={handleStep}>STEP</button>
       <button onClick={handleReset}>RESET</button>
-      <Grid gridSize={model.impl.cfg.grid_size} gridData={grid} />
+      <Grid size={10} grid={grid} />
     </>
   );
 }

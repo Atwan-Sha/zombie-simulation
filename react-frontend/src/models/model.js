@@ -103,7 +103,7 @@ class GameModelImpl {
         }
         this.grid = Array.from(Array(cfg.grid_size), () => Array(cfg.grid_size));
         this.population = Array.from(initial_coords, crd => new Creature(cfg, this.grid, crd%cfg.grid_size, Math.floor(crd/cfg.grid_size)));
-        // this.display_grid();
+        this.display_grid();
     }
 
     get_grid(timestep) {
@@ -126,7 +126,7 @@ class GameModelImpl {
             this.kill_half_population();
         this.do_movement();
         this.check_grid();
-        // this.display_grid();
+        this.display_grid();
     }
 
     do_aging() {
@@ -286,10 +286,30 @@ export function setup() {
     return model;
 }
 
-export function run(model, i) {
+export function run_turn() {
     let grid = model.get_grid(i);
+    i++;
+    console.log('model GRID: ', grid);
+    console.log('i:', i);
     return grid;
 }
 
+export function reset() {
+    model = setup();
+    i = 0;
+    console.log("=========== RESET =============");
+}
 
+export function grid_reducer(grid, action) {
+    if (action.type == "update") {
+      grid = run_turn();
+    } else if (action.type == "reset") {
+      grid = [];
+      reset();
+    }
+    return grid;
+  }
+
+let model = setup();
+let i = 0;
 

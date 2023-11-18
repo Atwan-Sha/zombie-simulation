@@ -82,6 +82,7 @@ button:focus-visible {
   grid-template-rows: repeat(10, 1fr);
   grid-template-columns: repeat(10, 1fr);
   /* gap: 5px; */
+  /* transition: all 0.5s; */
 }
 
 .cell {
@@ -91,6 +92,7 @@ button:focus-visible {
   border: 5px solid #242424;
   border-radius: 20%;
   color: black;
+  transition: all 0.5s;
 }
 .cell p {
   margin: 0;
