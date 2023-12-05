@@ -1,7 +1,7 @@
 import femaleIcon from "../assets/female-icon-50px.png";
 import maleIcon from "../assets/male-icon-50px.png";
 
-export default function Grid({ size, grid }) {
+export default function Grid({ size, grid, turn }) {
   console.log("renderGrid");
 
   const setSize = () => {
@@ -42,6 +42,7 @@ export default function Grid({ size, grid }) {
       <div className="grid-container" style={setSize()}>
         {gridCells}
       </div>
+      <p>{turn}</p>
     </>
   );
 }
@@ -49,7 +50,7 @@ export default function Grid({ size, grid }) {
 function Cell({ obj }) {
   return (
     <div
-      className={obj.is_radioactive ? "cell radioactive" : "cell"}
+      className={obj.is_radioactive ? "cell radioactive" : "cell obj"}
       style={{ backgroundColor: obj.color.toLowerCase() }}
     >
       <p>{obj.name}</p>
@@ -63,7 +64,7 @@ function Cell({ obj }) {
 
 function EmptyCell() {
   return (
-    <div className="cell" style={{ backgroundColor: "none" }}>
+    <div className="cell empty" style={{ backgroundColor: "#242424" }}>
       ---
     </div>
   );

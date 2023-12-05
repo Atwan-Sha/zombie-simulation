@@ -11,32 +11,36 @@ export default function App() {
   // ? useEffect hook
   // ? async function
   // ? implement observer pattern
-  // * useReducer hook
 
-  let [turn, setTurn] = useState(0); // ? need additional counter state to trigger re-render
+  let [cnt, setCnt] = useState(0);
   const [grid, dispatch] = useReducer(grid_reducer, []);
 
   const handleStep = () => {
-    setTurn(++turn);
     dispatch({
       type: "update",
+      turn: cnt,
     });
+    increment(1);
   };
 
+  const increment = (val) => {
+    setCnt(cnt += val);
+  }
+
   const handleReset = () => {
-    setTurn(0);
     dispatch({
       type: "reset",
     });
+    setCnt(0);
   };
 
   return (
     <>
       <h1>Hello Zombies!</h1>
-      <p>{turn}</p>
+      <p>{cnt}</p>
       <button onClick={handleStep}>STEP</button>
       <button onClick={handleReset}>RESET</button>
-      <Grid size={10} grid={grid} />
+      <Grid size={10} grid={grid} turn={cnt} />
     </>
   );
 }
