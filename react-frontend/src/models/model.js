@@ -287,7 +287,9 @@ export function setup() {
 
 export function grid_reducer(grid, action) {
     console.log("==== REDUCER CALL ====");
-    if (action.type == "update") {
+    if (action.type == "setup") {
+        model = setup(action.params);
+    } else if (action.type == "update") {
         grid = model.get_grid(action.turn);
     } else if (action.type == "reset") {
       grid = [];
