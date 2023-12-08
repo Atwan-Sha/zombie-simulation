@@ -1,5 +1,13 @@
-export default function Sliders({ handleInitPopChange, initPop, handleGridSizeChange, gridSize }) {
-
+export default function Sliders({
+  handleInitPopChange,
+  initPop,
+  handleGridSizeChange,
+  gridSize,
+  handleMutChanceChange,
+  mutChance,
+  handleFoodLimitChange,
+  foodLimit,
+}) {
   return (
     <div className="sliders">
       <label htmlFor="initial_population">Initial Population</label>
@@ -13,6 +21,7 @@ export default function Sliders({ handleInitPopChange, initPop, handleGridSizeCh
         onChange={handleInitPopChange}
       />
       <p>{initPop}</p>
+
       <label htmlFor="grid_size">Grid Size</label>
       <input
         type="range"
@@ -23,7 +32,31 @@ export default function Sliders({ handleInitPopChange, initPop, handleGridSizeCh
         value={gridSize}
         onChange={handleGridSizeChange}
       />
-      <p>{gridSize}</p>
+      <p>{gridSize}x{gridSize}</p>
+
+      <label htmlFor="mutation_chance">Mutation Chance</label>
+      <input
+        type="range"
+        id="mutation_chance"
+        name="mutation_chance"
+        min="0"
+        max="100"
+        value={mutChance}
+        onChange={handleMutChanceChange}
+      />
+      <p>{mutChance}:2%</p>
+
+      <label htmlFor="food_shortage_limit">Food Shortage Limit</label>
+      <input
+        type="range"
+        id="food_shortage_limit"
+        name="food_shortage_limit"
+        min="0"
+        max="1000"
+        value={foodLimit}
+        onChange={handleFoodLimitChange}
+      />
+      <p>{foodLimit}500</p>
     </div>
   );
 }

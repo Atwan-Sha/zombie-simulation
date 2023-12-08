@@ -39,7 +39,7 @@ export default function Grid({ size, grid, turn }) {
 
   return (
     <>
-      <div className="grid-container" style={setSize()}>
+      <div className="grid" style={setSize()}>
         {gridCells}
       </div>
     </>

@@ -60,13 +60,13 @@ export default function App() {
         handleStep={handleStep}
         handleReset={handleReset}
       />
+      <Grid size={gridSize} grid={grid} turn={cnt} />
       <Sliders
         handleInitPopChange={handleInitPopChange}
         initPop={initPop}
         handleGridSizeChange={handleGridSizeChange}
         gridSize={gridSize}
       />
-      <Grid size={gridSize} grid={grid} turn={cnt} />
     </>
   );
 }
