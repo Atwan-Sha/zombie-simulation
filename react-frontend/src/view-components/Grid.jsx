@@ -64,7 +64,7 @@ function Cell({ obj }) {
 function EmptyCell() {
   return (
     <div className="cell empty" style={{ backgroundColor: "#242424" }}>
-      ---
+      .
     </div>
   );
 }

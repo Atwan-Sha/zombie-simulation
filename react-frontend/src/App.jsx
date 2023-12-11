@@ -22,7 +22,6 @@ export default function App() {
   //* Button handlers
   const handleSetup = () => {
     console.log("-> RUN SETUP");
-
   };
   const handleStep = () => {
     dispatch({
@@ -53,20 +52,27 @@ export default function App() {
 
   return (
     <>
-      <h1>Hello Zombies!</h1>
-      <p>{cnt}</p>
-      <Buttons
-        handleSetup={handleSetup}
-        handleStep={handleStep}
-        handleReset={handleReset}
-      />
-      <Grid size={gridSize} grid={grid} turn={cnt} />
-      <Sliders
-        handleInitPopChange={handleInitPopChange}
-        initPop={initPop}
-        handleGridSizeChange={handleGridSizeChange}
-        gridSize={gridSize}
-      />
+      <header>
+        <h1>Hello Zombies!</h1>
+        <p>{cnt}</p>
+      </header>
+      <section id="grid_params">
+        <Buttons
+          handleSetup={handleSetup}
+          handleStep={handleStep}
+          handleReset={handleReset}
+        />
+        <Grid size={gridSize} grid={grid} turn={cnt} />
+        <Sliders
+          handleInitPopChange={handleInitPopChange}
+          initPop={initPop}
+          handleGridSizeChange={handleGridSizeChange}
+          gridSize={gridSize}
+        />
+      </section>
+      <section id="graph">
+        <div class="graph"></div>
+      </section>
     </>
   );
 }
