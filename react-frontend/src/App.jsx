@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { useReducer } from "react";
 import CounterButton from "./view-components/CounterButton.jsx";
-import Grid from "./view-components/Grid.jsx";
-import Buttons from "./view-components/Buttons.jsx";
 import TEST_GRID from "./models/test-data.js";
-import { grid_reducer } from "./models/model.js";
+import Buttons from "./view-components/Buttons.jsx";
+import Grid from "./view-components/Grid.jsx";
 import Sliders from "./view-components/Sliders.jsx";
-// import {model, handleClick} from "./controllers/controller.js";
+import { grid_reducer } from "./models/model.js";
 
 export default function App() {
   console.log("renderApp");
@@ -14,30 +13,48 @@ export default function App() {
   // ? async function
   // ? implement observer pattern
 
-  let [cnt, setCnt] = useState(0);
   const [grid, dispatch] = useReducer(grid_reducer, []);
-  let [initPop, setInitPop] = useState(0);
+  let [cnt, setCnt] = useState(0);
+  let [initPop, setInitPop] = useState(5);
   let [gridSize, setGridSize] = useState(10);
+  let [mutChance, setMutChance] = useState(2);
+  let [foodLimit, setFoodLimit] = useState(50);
 
   //* Button handlers
   const handleSetup = () => {
     console.log("-> RUN SETUP");
+    dispatch({
+      type: "setup",
+      cfg: {
+        initial_population: initPop,
+        grid_size: gridSize,
+        mutation_chance: mutChance / 100,
+        food_shortage_limit: foodLimit,
+      },
+    });
+    setCnt(1);
   };
   const handleStep = () => {
     dispatch({
       type: "update",
       turn: cnt,
     });
-    increment(1);
+    cnt > 0 ? increment(1) : console.log("Run setup first!");
   };
   const increment = (val) => {
     setCnt((cnt += val));
   };
-  const handleReset = () => {
+  const handleReset = () => { //! same as setup
     dispatch({
       type: "reset",
+      cfg: {
+        initial_population: initPop,
+        grid_size: gridSize,
+        mutation_chance: mutChance / 100,
+        food_shortage_limit: foodLimit,
+      },
     });
-    setCnt(0);
+    setCnt(1);
   };
 
   //* Slider handlers
@@ -49,12 +66,20 @@ export default function App() {
     console.log("grid size change");
     setGridSize(e.target.value);
   };
+  const handleMutChanceChange = (e) => {
+    console.log("mutation change");
+    setMutChance(e.target.value);
+  };
+  const handleFoodLimitChange = (e) => {
+    console.log("food shortage change");
+    setFoodLimit(e.target.value);
+  };
 
   return (
     <>
       <header>
         <h1>Hello Zombies!</h1>
-        <p>{cnt}</p>
+        <p>TURN {cnt}</p>
       </header>
       <section id="grid_params">
         <Buttons
@@ -68,10 +93,14 @@ export default function App() {
           initPop={initPop}
           handleGridSizeChange={handleGridSizeChange}
           gridSize={gridSize}
+          handleMutChanceChange={handleMutChanceChange}
+          mutChance={mutChance}
+          handleFoodLimitChange={handleFoodLimitChange}
+          foodLimit={foodLimit}
         />
       </section>
       <section id="graph">
-        <div class="graph"></div>
+        <div className="graph"></div>
       </section>
     </>
   );

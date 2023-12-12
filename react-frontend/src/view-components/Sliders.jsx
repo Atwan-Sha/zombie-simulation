@@ -44,7 +44,7 @@ export default function Sliders({
         value={mutChance}
         onChange={handleMutChanceChange}
       />
-      <p>{mutChance}:2%</p>
+      <p>{mutChance}%</p>
 
       <label htmlFor="food_shortage_limit">Food Shortage Limit</label>
       <input
@@ -56,7 +56,7 @@ export default function Sliders({
         value={foodLimit}
         onChange={handleFoodLimitChange}
       />
-      <p>{foodLimit}500</p>
+      <p>{foodLimit}</p>
     </div>
   );
 }
