@@ -281,10 +281,7 @@ export function grid_reducer(grid, action) {
         grid = model.get_grid(0);
     } else if (action.type == "update" && action.turn > 0) {
         grid = model.get_grid(action.turn);
-    } else if (action.type == "reset") {  //! same as setup
-        model = new GameModel(action.cfg);
-        grid = model.get_grid(0);
-    }
+    } 
     return grid;
 }
 

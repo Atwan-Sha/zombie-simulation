@@ -1,9 +1,8 @@
-export default function Buttons({ handleSetup, handleStep, handleReset }) {
+export default function Buttons({ buttonVal, handleSetup, handleStep }) {
   return (
     <div className="buttons">
-      <button onClick={handleSetup}>SETUP</button>
-      <button onClick={handleStep}>STEP</button>
-      <button onClick={handleReset}>RESET</button>
+      <button className={buttonVal} onClick={handleSetup}>{buttonVal}</button>
+      <button className={buttonVal == "RESET" ? "STEP" : ""} onClick={handleStep}>STEP</button>
     </div>
   );
 }

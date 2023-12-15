@@ -39,40 +39,28 @@ export default function App() {
       type: "update",
       turn: cnt,
     });
-    cnt > 0 ? increment(1) : console.log("Run setup first!");
+    cnt > 0 ? increment(1) : alert("Run SETUP first!");
   };
   const increment = (val) => {
     setCnt((cnt += val));
   };
-  const handleReset = () => { //! same as setup
-    dispatch({
-      type: "reset",
-      cfg: {
-        initial_population: initPop,
-        grid_size: gridSize,
-        mutation_chance: mutChance / 100,
-        food_shortage_limit: foodLimit,
-      },
-    });
-    setCnt(1);
-  };
 
   //* Slider handlers
   const handleInitPopChange = (e) => {
-    console.log("initial population change");
-    setInitPop(e.target.value);
+    console.log("initial population change", e.target.value, typeof e.target.value);
+    setInitPop(Number(e.target.value));
   };
   const handleGridSizeChange = (e) => {
-    console.log("grid size change");
-    setGridSize(e.target.value);
+    console.log("grid size change: ", e.target.value, typeof e.target.value);
+    setGridSize(Number(e.target.value));
   };
   const handleMutChanceChange = (e) => {
-    console.log("mutation change");
-    setMutChance(e.target.value);
+    console.log("mutation change", e.target.value, typeof e.target.value);
+    setMutChance(Number(e.target.value));
   };
   const handleFoodLimitChange = (e) => {
-    console.log("food shortage change");
-    setFoodLimit(e.target.value);
+    console.log("food shortage change", e.target.value, typeof e.target.value);
+    setFoodLimit(Number(e.target.value));
   };
 
   return (
@@ -83,9 +71,9 @@ export default function App() {
       </header>
       <section id="grid_params">
         <Buttons
+          buttonVal={cnt === 0 ? "SETUP" : "RESET"}
           handleSetup={handleSetup}
           handleStep={handleStep}
-          handleReset={handleReset}
         />
         <Grid size={gridSize} grid={grid} turn={cnt} />
         <Sliders

@@ -1,7 +1,7 @@
 import femaleIcon from "../assets/female-icon-50px.png";
 import maleIcon from "../assets/male-icon-50px.png";
 
-export default function Grid({ size, grid, turn }) {
+export default function Grid({ size, grid }) {
   console.log("renderGrid");
 
   const setSize = () => {
@@ -24,14 +24,27 @@ export default function Grid({ size, grid, turn }) {
     }
   };
 
+  const setClassName = (obj) => {
+    let str = "cell ";
+    if (size > 10) {
+      str += "small ";
+    }
+    if (obj == "empty") {
+      str += obj;
+    } else if (obj.is_radioactive) {
+      str += "radioactive";
+    }
+    return str;
+  };
+
   const gridCells = [];
   let key = 0;
   grid.forEach((row) => {
     for (let i = 0; i < row.length; i++) {
       if (isEmpty(row[i])) {
-        gridCells.push(<EmptyCell key={key} />);
+        gridCells.push(<EmptyCell key={key} setClassName={setClassName} />);
       } else {
-        gridCells.push(<Cell key={key} obj={row[i]} />);
+        gridCells.push(<Cell key={key} obj={row[i]} setClassName={setClassName} />);
       }
       key++;
     }
@@ -46,10 +59,12 @@ export default function Grid({ size, grid, turn }) {
   );
 }
 
-function Cell({ obj }) {
+function Cell({ obj, setClassName }) {
+  // ! small size bug
   return (
     <div
-      className={obj.is_radioactive ? "cell radioactive" : "cell obj"}
+      // className={"cell" + obj.is_radioactive ? "radioactive" : "" + size > 10 ? "small" : ""}
+      className={setClassName(obj)}
       style={{ backgroundColor: obj.color.toLowerCase() }}
     >
       <p>{obj.name}</p>
@@ -61,10 +76,15 @@ function Cell({ obj }) {
   );
 }
 
-function EmptyCell() {
+function EmptyCell({ setClassName }) {
+  // ! small size bug
   return (
-    <div className="cell empty" style={{ backgroundColor: "#242424" }}>
-      .
+    <div
+      // className={"cell empty" + size > 10 ? "small" : ""}
+      className={setClassName("empty")}
+      style={{ backgroundColor: "#242424" }}
+    >
+      <p>.</p>
     </div>
   );
 }

@@ -54,13 +54,20 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+button.SETUP {
+  border: 2px solid cyan;
+}
+button.STEP {
+  border: 2px solid cyan;
+}
+
 button:hover {
   border-color: #646cff;
 }
-button:focus,
+/* button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
+} */
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -75,10 +82,8 @@ button:focus-visible {
   }
 }
 
-/* ! fix grid relative to size (not just 10x10) */
-
 #grid_params {
-  border: 1px solid black;
+  /* border: 1px solid black; */
   text-align: center;
   height: 80vh;
 }
@@ -86,6 +91,8 @@ button:focus-visible {
 .grid {
   display: inline-grid;
   vertical-align: top;
+  /* position: relative; */
+  /* right: 60px; */
   width: 650px;
   height: auto;
   aspect-ratio: 1 / 1;
@@ -108,12 +115,14 @@ button:focus-visible {
   width: 100%;
   height: auto;
   aspect-ratio: 1 / 1;
-  border: 5px solid #242424;
+  /* ! small size bug */
+  border: 2px solid #242424;
   border-radius: 20%;
   color: black;
   /* background-color: #242424; */
 }
 .cell p {
+  /* ! small size bug */
   margin: 0;
   width: 100%;
   height: 50%;
@@ -131,14 +140,22 @@ button:focus-visible {
   display: none;
 }
 .cell.radioactive {
-  /* radioactive-graphic: glowing / zombie / alien etc... */
+  /* ! small size bug */
   border: 5px solid rgb(0, 255, 0);
   border-radius: 50%;
   filter: brightness(70%);
 }
 .cell.empty {
   color: rgb(109, 109, 109);
+  border: unset;
+  /* visibility: hidden; */
+  /* display: none; */
 }
+.cell.small p,
+.cell.small img {
+  display: none;
+}
+
 @media (max-width: 870px) {
   .cell p,
   .cell img {
@@ -156,7 +173,7 @@ button:focus-visible {
   width: 200px;
   height: 500px;
   padding: 20px;
-  margin-left: 20px;
+  /* margin-left: 20px; */
   /*   display: none; */
 }
 .sliders input {
@@ -171,6 +188,7 @@ button:focus-visible {
 }
 
 .graph {
+  visibility: hidden;
   width: 700px;
   height: 300px;
   border: 5px solid rgb(51, 51, 51);
