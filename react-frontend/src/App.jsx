@@ -15,13 +15,15 @@ export default function App() {
 
   const [grid, dispatch] = useReducer(grid_reducer, []);
   let [cnt, setCnt] = useState(0);
+  let [speed, setSpeed] = useState(1);
   let [initPop, setInitPop] = useState(5);
   let [gridSize, setGridSize] = useState(10);
   let [mutChance, setMutChance] = useState(2);
   let [foodLimit, setFoodLimit] = useState(50);
+  let [resetReminder, setResetReminder] = useState(false);
 
   //* Button handlers
-  const handleSetup = () => {
+  const handleSetupReset = () => {
     console.log("-> RUN SETUP");
     dispatch({
       type: "setup",
@@ -33,34 +35,44 @@ export default function App() {
       },
     });
     setCnt(1);
+    setResetReminder(false);
   };
   const handleStep = () => {
     dispatch({
       type: "update",
       turn: cnt,
     });
-    cnt > 0 ? increment(1) : alert("Run SETUP first!");
+    cnt > 0 ? increment(speed) : alert("Run SETUP first!");
   };
+  const handleSpeed = () => {
+    speed > 8 ? setSpeed(1) : setSpeed(speed * 2);
+  }
   const increment = (val) => {
     setCnt((cnt += val));
   };
 
   //* Slider handlers
+  // ? reset on change
   const handleInitPopChange = (e) => {
-    console.log("initial population change", e.target.value, typeof e.target.value);
+    console.log("initial population change", e.target.value);
     setInitPop(Number(e.target.value));
+    setResetReminder(true);
   };
   const handleGridSizeChange = (e) => {
-    console.log("grid size change: ", e.target.value, typeof e.target.value);
+    console.log("grid size change: ", e.target.value);
     setGridSize(Number(e.target.value));
+    setResetReminder(true);
+    // setTimeout(handleSetupReset, 500)
   };
   const handleMutChanceChange = (e) => {
-    console.log("mutation change", e.target.value, typeof e.target.value);
+    console.log("mutation change", e.target.value);
     setMutChance(Number(e.target.value));
+    setResetReminder(true);
   };
   const handleFoodLimitChange = (e) => {
-    console.log("food shortage change", e.target.value, typeof e.target.value);
+    console.log("food shortage change", e.target.value);
     setFoodLimit(Number(e.target.value));
+    setResetReminder(true);
   };
 
   return (
@@ -72,8 +84,10 @@ export default function App() {
       <section id="grid_params">
         <Buttons
           buttonVal={cnt === 0 ? "SETUP" : "RESET"}
-          handleSetup={handleSetup}
+          handleSetupReset={handleSetupReset}
           handleStep={handleStep}
+          speed={speed}
+          handleSpeed={handleSpeed}
         />
         <Grid size={gridSize} grid={grid} turn={cnt} />
         <Sliders
@@ -85,6 +99,7 @@ export default function App() {
           mutChance={mutChance}
           handleFoodLimitChange={handleFoodLimitChange}
           foodLimit={foodLimit}
+          showResetReminder={resetReminder}
         />
       </section>
       <section id="graph">

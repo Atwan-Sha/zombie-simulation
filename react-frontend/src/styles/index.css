@@ -148,12 +148,22 @@ button:focus-visible {
 .cell.empty {
   color: rgb(109, 109, 109);
   border: unset;
+  /* padding: 10%; */
   /* visibility: hidden; */
   /* display: none; */
 }
 .cell.small p,
 .cell.small img {
   display: none;
+}
+
+.cell.small.radioactive {
+  border: 2px solid rgb(0, 255, 0);
+}
+
+.cell.small.empty p {
+  display: block;
+  font-size: 0.5em;
 }
 
 @media (max-width: 870px) {
@@ -171,14 +181,29 @@ button:focus-visible {
   /* border: 5px solid rgb(100, 100, 100); */
   border-radius: 3%;
   width: 200px;
-  height: 500px;
+  height: 600px;
   padding: 20px;
   /* margin-left: 20px; */
   /*   display: none; */
 }
-.sliders input {
+.sliders input[type="range"] {
   width: 200px;
+  height: 2em;
+  appearance: none;
+  margin: 5px 0;
+  background: #000000;
+  border-radius: 100px;
 }
+.sliders input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #ffffff;
+  border-radius: 50%;
+  cursor: grab;
+}
+
 .sliders label {
   display: block;
 }
@@ -186,6 +211,24 @@ button:focus-visible {
   margin-top: 0;
   margin-bottom: 20px;
 }
+.sliders dialog {
+  /* display: none; */
+  /* display: block; */
+  box-sizing: border-box;
+  width: 80%;
+  height: 8em;
+  position: relative;
+  background-color: rgb(255, 96, 96);
+  color: black;
+  border: 5px solid rgb(255, 96, 96);
+  font-size: 1em;
+  font-weight: 600;
+  border-radius: 5%;
+  padding: 1em;
+  margin: 3em auto;
+  /* transition: visibility 500ms; */
+}
+
 
 .graph {
   visibility: hidden;

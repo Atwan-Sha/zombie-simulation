@@ -7,6 +7,7 @@ export default function Sliders({
   mutChance,
   handleFoodLimitChange,
   foodLimit,
+  showResetReminder,
 }) {
   return (
     <div className="sliders">
@@ -32,7 +33,9 @@ export default function Sliders({
         value={gridSize}
         onChange={handleGridSizeChange}
       />
-      <p>{gridSize}x{gridSize}</p>
+      <p>
+        {gridSize}x{gridSize}
+      </p>
 
       <label htmlFor="mutation_chance">Mutation Chance</label>
       <input
@@ -57,6 +60,19 @@ export default function Sliders({
         onChange={handleFoodLimitChange}
       />
       <p>{foodLimit}</p>
+
+      <ResetReminder show={showResetReminder} />
     </div>
+  );
+}
+
+function ResetReminder({ show }) {
+  return (
+    <dialog
+      open
+      style={show ? { visibility: "visible" } : { visibility: "hidden" }}
+    >
+      <p>Reset for changes to take effect!</p>
+    </dialog>
   );
 }
