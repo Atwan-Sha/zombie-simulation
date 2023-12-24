@@ -261,6 +261,7 @@ const TEST_GRID = [
       sex: "Female",
       color: "Cyan",
       age: 0,
+      name: "maria",
       repr_age: 2,
     },
     null,
