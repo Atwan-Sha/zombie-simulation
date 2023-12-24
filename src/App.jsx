@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useReducer } from "react";
-import CounterButton from "./view-components/CounterButton.jsx";
 import TEST_GRID from "./models/test-data.js";
 import Buttons from "./view-components/Buttons.jsx";
 import Grid from "./view-components/Grid.jsx";
