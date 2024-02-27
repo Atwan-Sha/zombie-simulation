@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { useReducer } from "react";
+import { useRef } from "react";
+import { Transition } from "react-transition-group";
+
 import TEST_GRID from "./models/test-data.js";
 import Buttons from "./view-components/Buttons.jsx";
 import Grid from "./view-components/Grid.jsx";
 import Sliders from "./view-components/Sliders.jsx";
+import TransitionTest from "./view-components/TransitionTest.jsx";
 import { grid_reducer } from "./models/model.js";
+import init_grid from "./models/model.js";
 
 export default function App() {
   console.log("renderApp");
@@ -12,13 +17,14 @@ export default function App() {
   // ? async function
   // ? implement observer pattern
 
-  const [grid, dispatch] = useReducer(grid_reducer, []);
+  // ! sliders lagging for bigger grid renders
+  const [grid, dispatch] = useReducer(grid_reducer, init_grid);
   let [cnt, setCnt] = useState(0);
   let [speed, setSpeed] = useState(1);
   let [initPop, setInitPop] = useState(5);
   let [gridSize, setGridSize] = useState(10);
   let [mutChance, setMutChance] = useState(2);
-  let [foodLimit, setFoodLimit] = useState(50);
+  let [foodLimit, setFoodLimit] = useState(50); // ! slider getting stuck
   let [resetReminder, setResetReminder] = useState(false);
 
   //* Button handlers
@@ -45,7 +51,7 @@ export default function App() {
   };
   const handleSpeed = () => {
     speed > 8 ? setSpeed(1) : setSpeed(speed * 2);
-  }
+  };
   const increment = (val) => {
     setCnt((cnt += val));
   };
@@ -81,6 +87,7 @@ export default function App() {
         <p>TURN {cnt}</p>
       </header>
       <section id="grid_params">
+        {cnt === 0 ? handleSetupReset() : console.log(cnt)}
         <Buttons
           buttonVal={cnt === 0 ? "SETUP" : "RESET"}
           handleSetupReset={handleSetupReset}
@@ -88,6 +95,7 @@ export default function App() {
           speed={speed}
           handleSpeed={handleSpeed}
         />
+        <TransitionTest/>
         <Grid size={gridSize} grid={grid} turn={cnt} />
         <Sliders
           handleInitPopChange={handleInitPopChange}

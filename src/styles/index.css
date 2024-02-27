@@ -7,11 +7,11 @@
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
-  font-synthesis: none;
+  /* font-synthesis: none; */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+  /* -webkit-text-size-adjust: 100%; */
 }
 
 a {
@@ -38,6 +38,27 @@ header {
 h1 {
   font-size: 2em;
   line-height: 1;
+}
+
+.transition {
+  /* color: white; */
+  width: 80vw;
+  height: 30vh;
+  margin: 0 auto;
+}
+
+.transition button {
+  display: block;
+  margin-left: 40vh;
+}
+
+.trans {
+  display: inline;
+  width: 50px;
+  height: 50px;
+  color: white;
+  background-color: blue;
+  margin: 4px;
 }
 
 .buttons {
@@ -119,6 +140,7 @@ button:focus-visible {
   border: 2px solid #242424;
   border-radius: 20%;
   color: black;
+  /* transition: all 2s; */
   /* background-color: #242424; */
 }
 .cell p {

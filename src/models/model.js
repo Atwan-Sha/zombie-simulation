@@ -274,17 +274,35 @@ class GameModelImpl {
 // * receive on/off state from controller
 // * send grid to controller
 
+const default_state_cfg = {
+    initial_population: 5,
+    grid_size: 10,
+    mutation_chance: 2 / 100,
+    food_shortage_limit: 50,
+}
+
+let model;
+function setup(cfg) {
+    model = new GameModel(cfg);
+    const grid = model.get_grid(0);
+    return grid;
+}
+
 export function grid_reducer(grid, action) {
     console.log("==== REDUCER CALL ====");
     if (action.type == "setup") {
-        model = new GameModel(action.cfg);
-        grid = model.get_grid(0);
+        grid = setup(action.cfg)
     } else if (action.type == "update" && action.turn > 0) {
         grid = model.get_grid(action.turn);
     } 
     return grid;
 }
 
-let model;
+const init_grid = setup(default_state_cfg);
+export default init_grid;
+
+// let model = new GameModel(default_state_cfg);
+// let init_grid = model.get_grid(0);
+// export default init_grid;
 
 
