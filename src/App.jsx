@@ -19,6 +19,8 @@ export default function App() {
 
   // ! sliders lagging for bigger grid renders
   const [grid, dispatch] = useReducer(grid_reducer, init_grid);
+  const [prevGrid, setPrevGrid] = useState([]);  //* double render for transition
+  let [inProp, setInProp] = useState(true);
   let [cnt, setCnt] = useState(0);
   let [speed, setSpeed] = useState(1);
   let [initPop, setInitPop] = useState(5);
@@ -42,7 +44,53 @@ export default function App() {
     setCnt(1);
     setResetReminder(false);
   };
+
+  // ****************
+  const handlePrevGrid = () => {
+    //! grid re-renders on prop change
+    // ? how to delay prevGrid render
+    // const temp = grid;
+    if(cnt === 1){
+      setPrevGrid(cloneGrid(grid));   // ! ref-value keeps updating!
+    }
+    setTimeout(() => {
+      // setInProp(false);
+    }, 100);
+  }
+
+  const isEmpty = (obj) => {  // ! check if faulty labels of empty cells
+    if (obj === null) {
+      return true;
+    } else if (obj === undefined) {
+      return true;
+    } else if (Object.keys(obj).length === 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const cloneGrid = (g) => {
+    let clone = [];
+    let rowNr = 0;
+    g.forEach((row) => {
+      clone.push([]);
+      for (let i = 0; i < row.length; i++) {
+        if (isEmpty(row[i])) {
+          clone[rowNr].push({});
+        } else {
+          clone[rowNr].push(row[i]);
+        }
+      }
+      rowNr++;
+    });
+    console.log("cloned grid: ", clone);
+    return clone;
+  }
+  // ****************
+
   const handleStep = () => {
+    handlePrevGrid();
     dispatch({
       type: "update",
       turn: cnt,
@@ -52,12 +100,16 @@ export default function App() {
   const handleSpeed = () => {
     speed > 8 ? setSpeed(1) : setSpeed(speed * 2);
   };
+
   const increment = (val) => {
     setCnt((cnt += val));
+    setInProp(true);
   };
+
 
   //* Slider handlers
   // ? reset on change
+  // ? reason to use TypeScript: expected number for e.target.value but got string
   const handleInitPopChange = (e) => {
     console.log("initial population change", e.target.value);
     setInitPop(Number(e.target.value));
@@ -80,6 +132,11 @@ export default function App() {
     setResetReminder(true);
   };
 
+  //* Transition
+  const transitionReRender = () => {
+    setPrevGrid(grid);
+  };
+
   return (
     <>
       <header>
@@ -95,8 +152,22 @@ export default function App() {
           speed={speed}
           handleSpeed={handleSpeed}
         />
-        <TransitionTest/>
-        <Grid size={gridSize} grid={grid} turn={cnt} />
+        {/* <TransitionTest/> */}
+        {console.log("render prevGrid")}
+        <Grid
+          size={gridSize}
+          grid={prevGrid}
+          // transitionReRender={transitionReRender}
+          // inProp={cnt % 2 === 0 ? true : false}
+          inProp={inProp}
+        />
+        <Grid
+          size={gridSize}
+          grid={grid}
+          // transitionReRender={transitionReRender}
+          // inProp={cnt % 2 === 0 ? true : false}
+          inProp={true}
+        />
         <Sliders
           handleInitPopChange={handleInitPopChange}
           initPop={initPop}

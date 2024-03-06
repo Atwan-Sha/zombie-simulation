@@ -1,8 +1,15 @@
 import femaleIcon from "../assets/female-icon-50px.png";
 import maleIcon from "../assets/male-icon-50px.png";
 
-export default function Grid({ size, grid }) {
+import { useState } from "react";
+import { useRef } from "react";
+import { Transition } from "react-transition-group";
+import Cell from "./Cell.jsx";
+
+export default function Grid({ size, grid, transitionReRender, inProp }) {
   console.log("renderGrid");
+
+  // const [prevGrid, setPrevGrid] = useState(grid);
 
   const setSize = () => {
     const style = {
@@ -37,54 +44,73 @@ export default function Grid({ size, grid }) {
     return str;
   };
 
+  // ! needs double rendering, save prev. grid
+  // let gridCells = [];
+  // let key = 0;
+  // prevGrid.forEach((row) => {
+  //   for (let i = 0; i < row.length; i++) {
+  //     if (isEmpty(row[i])) {
+  //       // gridCells.push(<EmptyCell key={key} setClassName={setClassName} />);
+  //       gridCells.push(
+  //         <Cell
+  //           key={key}
+  //           setClassName={setClassName}
+  //           empty={true}
+  //           inProp={false} // ? timely switch
+  //         />
+  //       );
+  //     } else {
+  //       gridCells.push(
+  //         <Cell
+  //           key={key}
+  //           obj={row[i]}
+  //           setClassName={setClassName}
+  //           empty={false}
+  //           inProp={false} // ? timely switch
+  //         />
+  //       );
+  //     }
+  //     key++;
+  //   }
+  // });
+
   const gridCells = [];
   let key = 0;
   grid.forEach((row) => {
     for (let i = 0; i < row.length; i++) {
       if (isEmpty(row[i])) {
-        gridCells.push(<EmptyCell key={key} setClassName={setClassName} />);
+        // gridCells.push(<EmptyCell key={key} setClassName={setClassName} />);
+        gridCells.push(
+          <Cell
+            key={key}
+            setClassName={setClassName}
+            empty={true}
+            inProp={inProp} // ? timely switch
+          />
+        );
       } else {
-        gridCells.push(<Cell key={key} obj={row[i]} setClassName={setClassName} />);
+        gridCells.push(
+          <Cell
+            key={key}
+            obj={row[i]}
+            setClassName={setClassName}
+            empty={false}
+            inProp={inProp} // ? timely switch
+          />
+        );
       }
       key++;
     }
   });
+
+  // transitionReRender()
 
   return (
     <>
       <div className="grid" style={setSize()}>
         {gridCells}
       </div>
+      {/* {transitionReRender()} */}
     </>
-  );
-}
-
-function Cell({ obj, setClassName }) {
-  // ! small size bug
-  return (
-    <div
-      // className={"cell" + obj.is_radioactive ? "radioactive" : "" + size > 10 ? "small" : ""}
-      className={setClassName(obj)}
-      style={{ backgroundColor: obj.color.toLowerCase() }}
-    >
-      <p>{obj.name}</p>
-      <img
-        className="icon"
-        src={obj.sex === "Female" ? femaleIcon : maleIcon}
-      />
-    </div>
-  );
-}
-
-function EmptyCell({ setClassName }) {
-  // ! small size bug
-  return (
-    <div
-      // className={"cell empty" + size > 10 ? "small" : ""}
-      className={setClassName("empty")}
-      style={{ backgroundColor: "#242424" }}
-    >
-      <p>.</p>
-    </div>
   );
 }

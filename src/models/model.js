@@ -283,13 +283,14 @@ const default_state_cfg = {
 
 let model;
 function setup(cfg) {
+    console.log("==== SETUP FUNC ====");
     model = new GameModel(cfg);
     const grid = model.get_grid(0);
     return grid;
 }
 
 export function grid_reducer(grid, action) {
-    console.log("==== REDUCER CALL ====");
+    // console.log("==== REDUCER CALL ====");
     if (action.type == "setup") {
         grid = setup(action.cfg)
     } else if (action.type == "update" && action.turn > 0) {
@@ -300,6 +301,7 @@ export function grid_reducer(grid, action) {
 
 const init_grid = setup(default_state_cfg);
 export default init_grid;
+// console.log("init_grid: ", init_grid)
 
 // let model = new GameModel(default_state_cfg);
 // let init_grid = model.get_grid(0);

@@ -44,21 +44,21 @@ h1 {
   /* color: white; */
   width: 80vw;
   height: 30vh;
-  margin: 0 auto;
+  /* margin: 0 auto; */
 }
 
 .transition button {
   display: block;
-  margin-left: 40vh;
+  margin-left: 60vh;
 }
 
 .trans {
-  display: inline;
+  /* display: inline; */
   width: 50px;
   height: 50px;
   color: white;
   background-color: blue;
-  margin: 4px;
+  margin-left: 60vh;
 }
 
 .buttons {
@@ -169,6 +169,8 @@ button:focus-visible {
 }
 .cell.empty {
   color: rgb(109, 109, 109);
+  font-weight: bolder;
+  font-size: larger;
   border: unset;
   /* padding: 10%; */
   /* visibility: hidden; */
