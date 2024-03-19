@@ -10,6 +10,7 @@ import Sliders from "./view-components/Sliders.jsx";
 import TransitionTest from "./view-components/TransitionTest.jsx";
 import { grid_reducer } from "./models/model.js";
 import init_grid from "./models/model.js";
+// import * as utils from "./view-components/utils.js";
 
 export default function App() {
   console.log("renderApp");
@@ -29,7 +30,7 @@ export default function App() {
   let [foodLimit, setFoodLimit] = useState(50); // ! slider getting stuck
   let [resetReminder, setResetReminder] = useState(false);
 
-  //* Button handlers
+  // //* Button handlers
   const handleSetupReset = () => {
     console.log("-> RUN SETUP");
     dispatch({
@@ -45,20 +46,8 @@ export default function App() {
     setResetReminder(false);
   };
 
-  // ****************
-  const handlePrevGrid = () => {
-    //! grid re-renders on prop change
-    // ? how to delay prevGrid render
-    // const temp = grid;
-    if(cnt === 1){
-      setPrevGrid(cloneGrid(grid));   // ! ref-value keeps updating!
-    }
-    setTimeout(() => {
-      // setInProp(false);
-    }, 100);
-  }
-
-  const isEmpty = (obj) => {  // ! check if faulty labels of empty cells
+  // //* prevGrid handlers
+  const isEmpty = (obj) => {
     if (obj === null) {
       return true;
     } else if (obj === undefined) {
@@ -87,16 +76,24 @@ export default function App() {
     console.log("cloned grid: ", clone);
     return clone;
   }
-  // ****************
 
+  // //* step handlers
   const handleStep = () => {
-    handlePrevGrid();
+    // handlePrevGrid();
+    if(cnt > 0){
+      setPrevGrid(cloneGrid(grid));
+    }
+    setTimeout(() => {
+      setInProp(false);
+    }, 100);
+  
     dispatch({
       type: "update",
       turn: cnt,
     });
     cnt > 0 ? increment(speed) : alert("Run SETUP first!");
   };
+
   const handleSpeed = () => {
     speed > 8 ? setSpeed(1) : setSpeed(speed * 2);
   };
@@ -107,7 +104,7 @@ export default function App() {
   };
 
 
-  //* Slider handlers
+  // //* Slider handlers
   // ? reset on change
   // ? reason to use TypeScript: expected number for e.target.value but got string
   const handleInitPopChange = (e) => {
@@ -132,11 +129,6 @@ export default function App() {
     setResetReminder(true);
   };
 
-  //* Transition
-  const transitionReRender = () => {
-    setPrevGrid(grid);
-  };
-
   return (
     <>
       <header>
@@ -155,17 +147,15 @@ export default function App() {
         {/* <TransitionTest/> */}
         {console.log("render prevGrid")}
         <Grid
+          type={"prevGrid"}
           size={gridSize}
           grid={prevGrid}
-          // transitionReRender={transitionReRender}
-          // inProp={cnt % 2 === 0 ? true : false}
           inProp={inProp}
         />
         <Grid
+          type={"grid"}
           size={gridSize}
           grid={grid}
-          // transitionReRender={transitionReRender}
-          // inProp={cnt % 2 === 0 ? true : false}
           inProp={true}
         />
         <Sliders
